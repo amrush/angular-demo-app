@@ -1,0 +1,49 @@
+<div class="jumbotron">
+    <h1>Page 1_2</h1>      
+    <p>Resolve ng-repeat issue</p>    
+</div>
+
+<div>
+    <h1>Pagination Example</h1>
+    <ul> 
+        <li ng-repeat="item in dataList">{{ item.name }}</li>   
+    </ul>
+</div>
+
+<div>
+    <!--
+    <pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()"></pagination><br/>
+
+    <pagination boundary-links="true" total-items="totalItems" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination><br/>
+    
+    <pagination direction-links="false" boundary-links="true" total-items="totalItems" ng-model="currentPage"></pagination><br/>
+    <pagination direction-links="false" total-items="totalItems" ng-model="currentPage"></pagination><br/>
+    
+    
+    <pre>The selected page no: {{currentPage}}</pre>
+
+    <hr />
+    <h4>Pager</h4>
+    <pager total-items="totalItems" ng-model="currentPage"></pager>
+  
+
+    <hr />
+    <h4>Limit the maximum visible buttons</h4>
+    <pagination total-items="totalItems" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination><br/>
+    -->
+    <pagination total-items="totalItems" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+
+    <!--<pre>Page: {{currentPage}} / {{numPages}}</pre>-->
+
+</div>
+
+<div>
+    <h1>Show More Example</h1>
+    <ul> 
+        <li ng-repeat="item in dataListForMoreRows | limitTo: itemsPerPage">{{ item.name }}</li>
+    </ul>
+</div>
+
+<div>
+    <button class="btn btn-default" ng-click="showMoreRows()" ng-show="itemsPerPage < totalItems">Show More</button>
+</div>

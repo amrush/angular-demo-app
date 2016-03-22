@@ -1,0 +1,53 @@
+{
+	"tabs":
+		[
+			{
+                "id" : "001",
+                "heading" : "Tab 1",
+                "content" : "<p>Tab 1 Content <a href='http://www.w3schools.com'>more info</a></p>",
+                "contentItems" : [],
+                "type" : "plain"
+            },
+            {
+                "id" : "002",
+                "heading" : "Tab 2",
+                "content" : "",
+                "contentItems" : [
+                	{
+                        "id" : "002001",
+                		"text" : "List Item 1",
+                		"date" : "1288323623006"
+                	},
+                	{
+                        "id" : "002002",
+                		"text" : "List Item 2",
+                		"date" : "1288456623006"
+                	},
+                	{
+                        "id" : "002003",
+                		"text" : "List Item 3",
+                		"date" : "1288345623006"
+                	},
+                	{
+                        "id" : "002004",
+                		"text" : "List Item 4",
+                		"date" : "1288325783006"
+                	},
+                	{
+                        "id" : "002005",
+                		"text" : "List Item 5",
+                		"date" : "1288478623006"
+                	}
+                ],
+                "type" : "list"
+            },
+            {
+                "id" : "003",
+                "heading" : "Tab 3",
+                "content" : "",
+                "contentItems" : [
+                ],
+                "type" : "list"
+            }
+		]
+}

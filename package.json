@@ -1,0 +1,30 @@
+{
+  "name": "browser-sync-demo",
+  "version": "1.0.0",
+  "description": "Browser-Sync demo",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mahesh Jadhav",
+  "license": "ISC",
+  "devDependencies": {
+    "angular": "1.5.0",
+    "angular-route": "1.5.0",
+    "angular-animate": "1.5.0",
+    "angular-sanitize": "1.5.0",
+    "angular-webstorage": "^0.1.2",
+    "angular-ui-bootstrap" : "^0.12.0",
+    "jquery": "^1.7.4",
+    "bootstrap": "^3.2.0",
+    "font-awesome": "^4.0.3",
+    "browser-sync": "^2.11.1",
+    "browser-sync-spa": "^1.0.3",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-less": "^3.0.5",
+    "gulp-minify-css": "^1.2.4",
+    "less-plugin-autoprefix": "^1.5.1",
+    "less-plugin-clean-css": "^1.5.1"
+  }
+}

@@ -1,0 +1,243 @@
+// declare a module
+var angularAppModule = angular.module('angularApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize']);
+
+angularAppModule.run(['$rootScope', function($rootScope) {
+            
+    $rootScope.pageLoading = false;
+
+}]);
+
+// service
+angularAppModule.factory("SlideService", function($q, $timeout, $http, $rootScope){
+   return {
+       getSlides: function(){
+           var deferred = $q.defer();
+           $timeout(function(){
+               $http.get('http://localhost:1234/data/slides.json').
+                  success(function(data, status, headers, config) {
+                    $rootScope.pageLoading = false;
+                    deferred.resolve(data);
+                }).
+                error(function(data, status, headers, config) {
+                    $rootScope.pageLoading = false;
+                    deferred.reject(data);
+                });
+           },5000);
+           return deferred.promise;
+       }
+   }
+});
+
+// directive
+angularAppModule.directive('tabList', function() {
+  return {
+    scope:{
+        tab: '=tabList',
+        listOrder: '='
+    },
+    templateUrl: "../partials/tablist.html"
+  };
+});
+
+angularAppModule.directive('editModal', function($modal) {
+  return {
+    scope:{
+        item: '=editModal'
+    },
+    link : function($scope, element, attrs) {
+        element.on('click', function() {
+          $scope.open();
+        });
+    },
+    controller: function($scope, $element, $attrs, $modal, $log) {
+        $scope.open = function(){
+            $scope.modalInstance = $modal.open({
+              templateUrl: '../partials/edit.html',
+              controller: 'EditController',
+              resolve: {
+                item: function () {
+                  return angular.copy($scope.item);  // using angular.copy() to pass a deep copy of the object to the modal to 
+                }                                    // overcome issue of Angular bootstrap ui modal scope binding with parent
+              }
+            });
+
+            $scope.modalInstance.result.then(function () {
+                $log.info('Modal opened at: ' + new Date());
+            }, function () {
+               $log.info('Modal dismissed at: ' + new Date());
+            });
+        };    
+    }
+  };
+});
+
+angularAppModule.directive('deleteModal', function() {
+  return {
+    scope:{
+        item: '=deleteModal'
+    },
+    link : function($scope, element, attrs) {
+        element.on('click', function() {
+          $scope.open();
+        });
+    },
+    controller: function($scope, $element, $attrs, $modal, $log) {
+        $scope.open = function(){
+            var modalInstance = $modal.open({
+              templateUrl: '../partials/delete.html',
+              controller: 'DeleteController',
+              resolve: {
+                item: function () {
+                  return $scope.item;
+                }
+              }
+            });
+
+            modalInstance.result.then(function () {
+                $log.info('Modal opened at: ' + new Date());
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+    }
+  };
+});
+
+// controllers
+angularAppModule.controller('ControllerHome',  ['$scope', '$http',  
+    function ($scope, $http) {
+        $scope.slideInterval = 5000;
+        $scope.noSlidesText = '';
+        
+        $http.get('http://localhost:1234/data/slides.json').
+          success(function(data, status, headers, config) {
+            $scope.slides = data.slides;
+        }).
+        error(function(data, status, headers, config) {
+            $scope.noSlidesText = "No slides to display!"
+        });
+}]);
+
+angularAppModule.controller('ControllerOne',  ['$scope', '$http', 'TabData',
+    function ($scope, $http, TabData) {
+
+        $scope.tabContent = TabData.tabs;
+        $scope.predicate = "date";
+}]);
+
+angularAppModule.controller('ControllerTwo',  ['$scope', '$http', 'SlideData',
+    function ($scope, $http, SlideData) {
+        console.log("SlideData: ", SlideData);
+        $scope.slides = SlideData.slides;
+}]);
+
+angularAppModule.controller('ControllerThree',  ['$scope', '$http', 'SlideService', '$rootScope',
+    function ($scope, $http, SlideService, $rootScope) {
+
+        $rootScope.pageLoading = true;
+        $scope.noSlidesText = '';
+        var slidePromise = SlideService.getSlides();
+
+        slidePromise.then(function(response) {
+            // success handler
+            console.log("Success Response: ", response);
+            $scope.slides = response.slides;
+        }, function(response) {
+            // error handler
+            console.log("Error Response: ", response);
+            $scope.noSlidesText = "No slides to display!"
+        });
+
+}]);
+
+angularAppModule.controller('EditController',  ['$scope', '$modalInstance', 'item',  
+    function ($scope, $modalInstance, item) {
+        $scope.item = item;
+
+        $scope.ok = function () {
+            $modalInstance.close();
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+}]);
+
+angularAppModule.controller('DeleteController',  ['$scope', '$modalInstance', 'item',  
+    function ($scope, $modalInstance, item) {
+        $scope.item = item;
+
+        $scope.ok = function () {
+            $modalInstance.close();
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+}]);
+
+// routing
+angularAppModule.config(['$routeProvider', function($routeProvider) {
+    $routeProvider.
+        when('/home', {
+        templateUrl: 'views/home.html',
+        controller: 'ControllerHome'
+    }).
+        when('/page11', {
+        templateUrl: 'views/page_1_1.html',
+        controller: 'ControllerOne',
+        resolve: {
+            TabData: ['$q', '$http', function($q, $http) {
+                var deferred =  $q.defer();
+
+                console.log("deferred ", deferred);
+
+                $http.get('http://localhost:1234/data/tabs.json').
+                  success(function(data, status, headers, config) {
+                    deferred.resolve(data);
+                }).
+                error(function(data, status, headers, config) {
+                    deferred.reject(data);
+                });
+
+                return deferred.promise;
+
+            }]
+        }
+    }).
+        when('/page12', {
+        templateUrl: 'views/page_1_2.html',
+        controller: 'ControllerOne'
+    }).
+        when('/page13', {
+        templateUrl: 'views/page_1_3.html',
+        controller: 'ControllerOne'
+    }).
+        when('/page2', {
+        templateUrl: 'views/page_2.html',
+        controller: 'ControllerTwo',
+        resolve: {
+            SlideData: ['$q', '$http', function($q, $http) {
+                var deferred =  $q.defer();
+
+                console.log("deferred ", deferred);
+
+                $http.get('http://localhost:1234/data/slides.json').
+                  success(function(data, status, headers, config) {
+                    deferred.resolve(data);
+                }).
+                error(function(data, status, headers, config) {
+                    deferred.reject(data);
+                });
+
+                return deferred.promise;
+
+            }]
+        }
+    }).
+        when('/page3', {
+        templateUrl: 'views/page_3.html',
+        controller: 'ControllerThree'
+    }).
+    otherwise({redirectTo: '/home'});
+}]);

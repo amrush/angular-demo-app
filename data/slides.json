@@ -1,0 +1,21 @@
+{
+	"slides":
+		[
+			{
+				"image": "http://localhost:3000/images/Chrysanthemum.jpg",
+				"text": "Chrysanthemum"
+			},
+			{
+				"image": "http://localhost:3000/images/Hydrangeas.jpg",
+				"text": "Hydrangeas"
+			},
+			{
+				"image": "http://localhost:3000/images/Lighthouse.jpg",
+				"text": "Lighthouse"
+			},
+			{
+				"image": "http://localhost:3000/images/Tulips.jpg",
+				"text": "Tulips"
+			}
+		]
+}

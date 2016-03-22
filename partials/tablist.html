@@ -1,0 +1,15 @@
+<ul class="tabList">
+    <li class="tabListHeading">
+        <div class="text heading" ng-click="predicate='text'; reverse=!reverse;">Text</div>
+        <div class="date heading" ng-click="predicate='date'; reverse=!reverse;">Date</div>
+    </li>
+    <li class="tabListItem" ng-repeat="item in tab.contentItems | orderBy:listOrder:reverse">
+        <div class="text">{{ item.text }}
+        	<ul class="quicklinks">
+        		<li><a edit-modal="item" edit-modal-tab="tab">Edit</a></li>
+        		<li><a delete-modal="item" delete-modal-tab="tab">Delete</a></li>
+        	</ul>
+        </div>
+        <div class="date">{{ item.date | date: 'yyyy-MM-dd' }}</div>
+    </li>
+</ul>

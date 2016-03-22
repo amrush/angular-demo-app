@@ -1,0 +1,11 @@
+<tabset justified="true">
+    <tab ng-repeat="tab in tabContent" heading="{{ tab.heading | uppercase }}" active="tab.active"> <!-- select="selectTab(tab)"-->
+        <div ng-switch on="tab.type">
+            <alert type="success closable updateAlert" ng-show="tabObject.update" close="tabObject.update = false" class="fadein fadeout">
+                You have successfully updated list content.
+            </alert>
+            <div ng-switch-when="list" ng-show="tab.contentItems.length > 0" tab-list="tab" list-order="predicate"></div>       
+            <div ng-switch-default ng-bind-html="tab.content"></div>
+        </div>
+    </tab>
+</tabset>

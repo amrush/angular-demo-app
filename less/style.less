@@ -1,0 +1,56 @@
+html, body{height:100%;}
+header, footer{width:100%;}
+footer {background-color:#222; border-color:#080808; height:50px; clear:both;}
+.main{margin:0 auto; min-height:100%; height:auto !important; height:100%;}
+.container{z-index:10; margin:20px auto;}
+.pageLoading{position:absolute; width:100%; height:100%; top:0; left:0; background:#ccc url("../images/ajax-loader.gif") center center no-repeat; z-index:100;}
+/* home */
+.carouselContainer {margin-bottom:20px;}
+.carouselContainer img {height:350px;}
+/* Page 1_1 */
+.tab-content{padding:20px 10px; border:1px solid #ddd; border-top:none; border-radius: 0px 0px 4px 4px;overflow: hidden;}
+.tabList{list-style: none;width:100%;padding:0;margin:0;}
+.tabList .tabListItem, .tabList .tabListHeading,vvv{list-style: none;width:100%;display: table;}
+.tabList li div{display: table-cell; vertical-align:middle;height:50px;}
+.tabList li div.heading{font-weight: bold; cursor: pointer;}
+.tabList li div.text{width:80%;}
+.tabList li div.date{width:20%;text-align: center;}
+.quicklinks{list-style: none;padding:0;margin:0;display: table;}
+.quicklinks li{list-style: none;display: table-cell;padding:0 5px;}
+.quicklinks li a{text-decoration: none;cursor: pointer;}
+.updateAlert{position: fixed; z-index:5; width:50%; left:50%; margin-left:-25%;}
+.fadein,
+.fadeout {
+  -webkit-transition: opacity 0.2s ease-in;
+  -moz-transition:opacity 0.2s ease-in;
+  -o-transition:opacity 0.2s ease-in;
+  transition:opacity 0.2s ease-in;
+}
+
+.fadein.ng-hide-remove,
+.fadeout.ng-hide-add.ng-hide-add-active {
+  opacity: 0;
+  display: block !important;
+}
+
+.fadeout.ng-hide-add,
+.fadein.ng-hide-remove.ng-hide-remove-active {
+  opacity: 1;
+  display: block !important;
+}
+/* Edit Modal */
+.error{height: 30px; color: red;}
+
+/* Bar Chart */
+.chart{
+	margin:50px 0px;
+}
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
