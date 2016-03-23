@@ -1,5 +1,5 @@
 <tabset justified="true">
-    <tab ng-repeat="tab in tabContent" heading="{{ tab.heading | uppercase }}" active="tab.active"> <!-- select="selectTab(tab)"-->
+    <tab ng-repeat="tab in tabContent" heading="{{ tab.heading | uppercase }}" active="tab.active">
         <div ng-switch on="tab.type">
             <alert type="success closable updateAlert" ng-show="tabObject.update" close="tabObject.update = false" class="fadein fadeout">
                 You have successfully updated list content.

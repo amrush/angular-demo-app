@@ -1,5 +1,5 @@
-<div class="carouselContainer clearfix">
-    <carousel interval="slideInterval" ng-hide="slides.length <= 0">
+<div class="carouselContainer">
+    <carousel ng-hide="slides.length <= 0">
       <slide ng-repeat="slide in slides" active="slide.active">
         <img ng-src="{{slide.image}}" style="margin:auto;" class="img-responsive">
         <div class="carousel-caption">
@@ -7,10 +7,11 @@
         </div>
       </slide>
     </carousel>
+
     <div class="text-center text-warning" ng-hide="slides.length > 0">{{noSlidesText}}</div>
 </div>
 
-<div class="row">
+<div class="row homeBg" ng-show="isContentVisible()">
     <div class="col-md-4 text-justify">
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
     </div>

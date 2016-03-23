@@ -1,5 +1,5 @@
 // declare a module
-var angularAppModule = angular.module('angularApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize', 'WebStorageModule', 'ngAnimate']);
+var angularAppModule = angular.module('angularApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize', 'WebStorageModule']);
 
 angularAppModule.run(['$rootScope', function($rootScope) {
             
@@ -7,116 +7,15 @@ angularAppModule.run(['$rootScope', function($rootScope) {
 
 }]);
 
-// service
-angularAppModule.factory("SlideService", function($q, $timeout, $http, $rootScope){
-   return {
-       getSlides: function(){
-           var deferred = $q.defer();
-           $timeout(function(){
-               $http.get('http://localhost:3000/data/slides.json').
-                  success(function(data, status, headers, config) {
-                    $rootScope.pageLoading = false;
-                    deferred.resolve(data);
-                }).
-                error(function(data, status, headers, config) {
-                    $rootScope.pageLoading = false;
-                    deferred.reject(data);
-                });
-           },5000);
-           console.log(deferred.promise);
-           return deferred.promise;
-       }
-   }
-});
-
-// directive
-angularAppModule.directive('tabList', function() {
-  return {
-    scope:{
-        tab: '=tabList',
-        listOrder: '='
-    },
-    templateUrl: "../partials/tablist.html"
-  };
-});
-
-angularAppModule.directive('editModal', function($modal) {
-  return {
-    scope:{
-        item: '=editModal',
-        editModalTab: '='
-    },
-    link : function($scope, element, attrs) {
-        element.on('click', function() {
-          $scope.open();
-        });
-    },
-    controller: function($scope, $element, $attrs, $modal, $log) {
-        $scope.open = function(){
-            $scope.modalInstance = $modal.open({
-              templateUrl: '../partials/edit.html',
-              controller: 'EditController',
-              resolve: {
-                item: function () {
-                    return angular.copy($scope.item);  // using angular.copy() to pass a deep copy of the object to the modal to 
-                },                                    // overcome issue of Angular bootstrap ui modal scope binding with parent
-                tab:  function(){
-                    return angular.copy($scope.editModalTab);
-                }
-              }
-            });
-
-            $scope.modalInstance.result.then(function () {
-                $log.info('Modal opened at: ' + new Date());
-            }, function () {
-               $log.info('Modal dismissed at: ' + new Date());
-            });
-        };    
-    }
-  };
-});
-
-angularAppModule.directive('deleteModal', function() {
-  return {
-    scope:{
-        item: '=deleteModal',
-        deleteModalTab: '='
-    },
-    link : function($scope, element, attrs) {
-        element.on('click', function() {
-          $scope.open();
-        });
-    },
-    controller: function($scope, $element, $attrs, $modal, $log) {
-        $scope.open = function(){
-            var modalInstance = $modal.open({
-              templateUrl: '../partials/delete.html',
-              controller: 'DeleteController',
-              resolve: {
-                item: function () {
-                    return angular.copy($scope.item);  // using angular.copy() to pass a deep copy of the object to the modal to 
-                },                                    // overcome issue of Angular bootstrap ui modal scope binding with parent
-                tab:  function(){
-                    return angular.copy($scope.deleteModalTab);
-                }
-              }
-            });
-
-            modalInstance.result.then(function () {
-                $log.info('Modal opened at: ' + new Date());
-            }, function () {
-                $log.info('Modal dismissed at: ' + new Date());
-            });
-        };
-    }
-  };
-});
-
 // controllers
 angularAppModule.controller('ControllerHome',  ['$scope', '$http',  
     function ($scope, $http) {
         $scope.slideInterval = 5000;
         $scope.noSlidesText = '';
+
+        $scope.isContentVisible = function() {
+            return true;
+        };
         
         $http.get('http://localhost:3000/data/slides.json').
           success(function(data, status, headers, config) {
@@ -131,33 +30,17 @@ angularAppModule.controller('ControllerOne',  ['$scope', '$http', 'TabData', 'we
     function ($scope, $http, TabData, webStorageService) {
         webStorageService.clearAll();
         $scope.tabContent = webStorageService.get('localTabContent');
-        //console.log("Local: ", $scope.tabContent);
+
         if($scope.tabContent == null) {
             $scope.tabContent = TabData.tabs;
             webStorageService.set('localTabContent', TabData.tabs);
         }
         $scope.predicate = "date";
 
-        /*$scope.selectTab =  function(currentTab) {
-            //console.log("Select Tab fired:");
-            //console.log("current tab: ", currentTab);
-            //console.log("Tab Content Inside selectTab: ", $scope.tabContent);
-            angular.forEach($scope.tabContent, function(tab) {
-                console.log("select tab current tab: ", currentTab);
-                tab.a = false;
-                if (tab.id === currentTab.id) {
-                    tab.a = true;
-                }
-            });
-
-            webStorageService.set('localTabContent', $scope.tabContent);
-        };*/
-
         $scope.$on("tabContentUpdated", function(event, object) {
             $scope.tabObject = object;
             if($scope.tabObject.update){
                 $scope.tabContent = webStorageService.get('localTabContent');
-                console.log("on update: ",$scope.tabContent)
             }
         });
 }]);
@@ -236,10 +119,7 @@ angularAppModule.controller('ControllerOne_3',  ['$scope', '$http', '$log',
         };
 
         var type = function(d) {
-            console.log("d: ", d);
             d.value = +d.value; // coerce to number
-
-            console.log("d.value: ", d.value);
             return d;
         };       
 
@@ -247,7 +127,6 @@ angularAppModule.controller('ControllerOne_3',  ['$scope', '$http', '$log',
 
 angularAppModule.controller('ControllerTwo',  ['$scope', '$http', 'SlideData',
     function ($scope, $http, SlideData) {
-        console.log("SlideData: ", SlideData);
         $scope.slides = SlideData.slides;
 }]);
 
@@ -260,11 +139,9 @@ angularAppModule.controller('ControllerThree',  ['$scope', '$http', 'SlideServic
 
         slidePromise.then(function(response) {
             // success handler
-            //console.log("Success Response: ", response);
             $scope.slides = response.slides;
         }, function(response) {
             // error handler
-            console.log("Error Response: ", response);
             $scope.noSlidesText = "No slides to display!"
         });
 
@@ -274,11 +151,11 @@ angularAppModule.controller('EditController',  ['$rootScope', '$scope', '$modalI
     function ($rootScope, $scope, $modalInstance, item, tab, webStorageService) {
         $scope.item = item;
         $scope.tab = tab;
-        //console.log("$scope.tab: ", $scope.tab);
 
         var updateItem = function(){
             var tabContent = webStorageService.get("localTabContent");
             var itemTextUpdated = false;
+
             angular.forEach(tabContent, function(tab) {
                 tab.active = false;
                 if (tab.id === $scope.tab.id && tab.contentItems.length) {
@@ -293,7 +170,7 @@ angularAppModule.controller('EditController',  ['$rootScope', '$scope', '$modalI
                     }
                 }
             });
-            console.log("On edit:", tabContent);
+
             webStorageService.set('localTabContent', tabContent);
             $rootScope.$broadcast('tabContentUpdated', {"update": true, "currentTab": $scope.tab});
         };
@@ -312,18 +189,16 @@ angularAppModule.controller('DeleteController',  ['$scope', '$rootScope', '$moda
     function ($scope, $rootScope, $modalInstance, item, tab, webStorageService) {
         $scope.item = item;
         $scope.tab = tab;
-        //console.log("$scope.tab: ", $scope.tab);
 
         var deleteItem =  function(){
             var tabContent = webStorageService.get("localTabContent");
             var itemDeleted = false;
-            //console.log(tabContent);
+
             angular.forEach(tabContent, function(tab, tabKey) {
                 tab.active = false;
                 if (tab.id === $scope.tab.id && tab.contentItems.length) {
                     angular.forEach(tab.contentItems, function(item, itemKey) {
                         if(item.id === $scope.item.id) {
-                            //console.log("itemKey", itemKey);
                             tab.contentItems.splice(itemKey, 1);
                             itemDeleted = true;
                         }
@@ -333,8 +208,6 @@ angularAppModule.controller('DeleteController',  ['$scope', '$rootScope', '$moda
                     }
                 }
             });
-
-            //console.log(tabContent);
 
             webStorageService.set('localTabContent', tabContent);
             $rootScope.$broadcast('tabContentUpdated', {"update": true, "currentTab": $scope.tab});
@@ -350,6 +223,112 @@ angularAppModule.controller('DeleteController',  ['$scope', '$rootScope', '$moda
         };
 }]);
 
+
+// service
+angularAppModule.factory("SlideService", function($q, $timeout, $http, $rootScope){
+   return {
+       getSlides: function(){
+           var deferred = $q.defer();
+           $timeout(function(){
+               $http.get('http://localhost:3000/data/slides.json').
+                  success(function(data, status, headers, config) {
+                    $rootScope.pageLoading = false;
+                    deferred.resolve(data);
+                }).
+                error(function(data, status, headers, config) {
+                    $rootScope.pageLoading = false;
+                    deferred.reject(data);
+                });
+           },5000);
+
+           return deferred.promise;
+       }
+   }
+});
+
+// directive
+angularAppModule.directive('tabList', function() {
+  return {
+    scope:{
+        tab: '=tabList',
+        listOrder: '='
+    },
+    templateUrl: "../partials/tablist.html"
+  };
+});
+
+angularAppModule.directive('editModal', function() {
+  return {
+    scope:{
+        item: '=editModal',
+        editModalTab: '='
+    },
+    link : function($scope, element, attrs) {
+        element.on('click', function() {
+          $scope.open();
+        });
+    },
+    controller: function($scope, $element, $attrs, $modal, $log) {
+        $scope.open = function(){
+            var modalInstance = $modal.open({
+              templateUrl: '../partials/edit.html',
+              controller: 'EditController',
+              resolve: {
+                item: function () {
+                    return angular.copy($scope.item);  // using angular.copy() to pass a deep copy of the object to the modal to 
+                },                                    // overcome issue of Angular bootstrap ui modal scope binding with parent
+                tab:  function(){
+                    return angular.copy($scope.editModalTab);
+                }
+              }
+            });
+
+            modalInstance.result.then(function () {
+                $log.info('Modal opened at: ' + new Date());
+            }, function () {
+               $log.info('Modal dismissed at: ' + new Date());
+            });
+        };    
+    }
+  };
+});
+
+angularAppModule.directive('deleteModal', function() {
+  return {
+    scope:{
+        item: '=deleteModal',
+        deleteModalTab: '='
+    },
+    link : function($scope, element, attrs) {
+        element.on('click', function() {
+          $scope.open();
+        });
+    },
+    controller: function($scope, $element, $attrs, $modal, $log) {
+        $scope.open = function(){
+            var modalInstance = $modal.open({
+              templateUrl: '../partials/delete.html',
+              controller: 'DeleteController',
+              resolve: {
+                item: function () {
+                    return angular.copy($scope.item);  // using angular.copy() to pass a deep copy of the object to the modal to 
+                },                                    // overcome issue of Angular bootstrap ui modal scope binding with parent
+                tab:  function(){
+                    return angular.copy($scope.deleteModalTab);
+                }
+              }
+            });
+
+            modalInstance.result.then(function () {
+                $log.info('Modal opened at: ' + new Date());
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+    }
+  };
+});
+
 // routing
 angularAppModule.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider.
@@ -363,8 +342,6 @@ angularAppModule.config(['$routeProvider', '$locationProvider', function($routeP
         resolve: {
             TabData: ['$q', '$http', function($q, $http) {
                 var deferred =  $q.defer();
-
-                console.log("deferred ", deferred);
 
                 $http.get('http://localhost:3000/data/tabs.json').
                   success(function(data, status, headers, config) {
@@ -393,8 +370,6 @@ angularAppModule.config(['$routeProvider', '$locationProvider', function($routeP
         resolve: {
             SlideData: ['$q', '$http', function($q, $http) {
                 var deferred =  $q.defer();
-
-                console.log("deferred ", deferred);
 
                 $http.get('http://localhost:3000/data/slides.json').
                   success(function(data, status, headers, config) {

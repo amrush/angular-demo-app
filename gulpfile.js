@@ -27,7 +27,7 @@ gulp.task('styles', function () {
   return gulp.src('./less/main.less')
     .pipe(less({
       paths: [ path.join(__dirname, 'less', 'includes') ],
-      plugins: [autoprefix, cleancss]
+      plugins: [autoprefix]
     }))
     .pipe(gulp.dest('./css'))
   	.pipe(minifyCSS())
@@ -38,9 +38,6 @@ gulp.task('serve', function () {
 
     // Serve files from the root of this project
     browserSync.init({
-        /*server: {
-            baseDir: "./"
-        }*/
         open: true,
         server: {
             baseDir: "./"
